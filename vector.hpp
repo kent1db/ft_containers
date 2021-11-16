@@ -201,7 +201,7 @@ namespace ft {
 		/** Operator = **/
 
 		vector & operator=(const vector& x){
-//			clear();
+			clear();
 			_capacity = x._capacity;
 			_alloc = x._alloc;
 			_array = _alloc.allocate(_capacity);
@@ -273,7 +273,8 @@ namespace ft {
 					_alloc.construct(&tmp[i], _array[i]);
 					_alloc.destroy(&_array[i]);
 				}
-				_alloc.deallocate(_array, _capacity);
+				if (_capacity)
+					_alloc.deallocate(_array, _capacity);
 				_array = tmp;
 				_capacity = capacity(n);
 			}
@@ -395,8 +396,8 @@ namespace ft {
 		}
 
 		iterator erase (iterator first, iterator last) {
-			typename random_access_iterator::difference_type p = last - first + 1;
-			while (--p)
+			typename random_access_iterator::difference_type p = last - first;
+			while (p--)
 				erase(first);
 			return (first);
 		}
