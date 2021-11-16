@@ -1,25 +1,17 @@
 #include "Vector.hpp"
-#include <vector>
 #include <iterator>
-
+#include "Stack.hpp"
+#include <vector>
+#include "Map.hpp"
 
 int 	main(void){
 
-	std::cout << "My Vector\n";
-	/*** My Vector ***/
 
-	ft::vector<int> myvector;
-	myvector.push_back(100);
-	myvector.push_back(200);
-	myvector.push_back(300);
+	ft::vector<int> vec(3, 100);
+	ft::stack<int> first;
+	ft::stack<int> second(vec);
 
-	myvector.clear();
-	myvector.push_back(1101);
-	myvector.push_back(2202);
-
-
-	std::cout << "Reference Vector\n";
-	/*** Reference Vector ***/
+	std::cout << "size of : " << first.size() << "\n";
 
 
 	return (0);

@@ -2,7 +2,7 @@ NAME			= container
 
 FILES			=  main.cpp
 
-INC_FILES		= Vector.hpp Iterator.hpp Enable.hpp
+INC_FILES		= Vector.hpp Iterator.hpp Enable.hpp Map.hpp
 INC_PATH		= .
 INC				= $(addprefix ${INC_PATH}/, ${INC_FILES})
 
@@ -14,7 +14,7 @@ BIN 			= $(SRC:%.cpp=$(BIN_PATH)/%.o)
 
 CC				= clang++
 RM				= rm -rf
-FLAGS			= -std=c++98 -Wall -Wextra  -Werror
+FLAGS			= -std=c++98 -Wall -Wextra  -Werror -fsanitize=address -g3
 
 all: 			${NAME}
 
