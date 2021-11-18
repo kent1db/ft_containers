@@ -1,7 +1,9 @@
 #ifndef MAP_HPP
-#define MMAP_HPP
+#define MAP_HPP
 #include <iostream>
 #include "Iterator.hpp"
+#include "RedBlackTree.hpp"
+#include "LexicoComp.hpp"
 
 namespace ft {
 	template <	typename Key,
