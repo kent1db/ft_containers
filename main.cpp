@@ -7,20 +7,23 @@
 
 int 	main(void){
 
-	ft::tree<int> it(40);
-	ft::tree<int>::node *elem;
-	it.insertElem(it.createElement(50), it.getRoot());
-	elem = it.insertElem(it.createElement(20), it.getRoot());
-	it.insertElem(it.createElement(30), it.getRoot());
-	it.insertElem(it.createElement(10), it.getRoot());
-//	it.insertElem(it.createElement(70), it.getRoot());
-//	it.insertElem(it.createElement(30), it.getRoot());
-//	it.insertElem(it.createElement(20), it.getRoot());
-//	it.insertElem(it.createElement(10), it.getRoot());
-//	it.insertElem(it.createElement(1), it.getRoot());
-	it.displayTree(it.getRoot());
-	std::cout << "\nrotate\n";
-	it.rotateRight(elem);
-	it.displayTree(it.getRoot());
+	ft::tree<int> it(33);
+	it.insertElem(it.createElement(13), it.getRoot());
+	it.insertElem(it.createElement(53), it.getRoot());
+	it.insertElem(it.createElement(11), it.getRoot());
+	it.insertElem(it.createElement(21), it.getRoot());
+	it.insertElem(it.createElement(41), it.getRoot());
+	it.insertElem(it.createElement(61), it.getRoot());
+	it.insertElem(it.createElement(15), it.getRoot());
+	it.insertElem(it.createElement(31), it.getRoot());
+	it.insertElem(it.createElement(20), it.getRoot());
+	it.insertElem(it.createElement(42), it.getRoot());
+//	it.insertElem(it.createElement(43), it.getRoot());
+//	it.insertElem(it.createElement(56), it.getRoot());
+//	it.insertElem(it.createElement(36), it.getRoot());
+//	it.insertElem(it.createElement(27), it.getRoot());
+//	it.insertElem(it.createElement(52), it.getRoot());
+//	it.insertElem(it.createElement(45), it.getRoot());
+	it.displayTree(it.getRoot(), "", true);
 	return (0);
 }
