@@ -10,6 +10,7 @@ enum e_color
 {
 	black, red
 };
+
 namespace ft {
 	template<typename T>
 	class tree
@@ -77,29 +78,27 @@ namespace ft {
 			return (elem->right);
 		}
 
-		node *insertElem(node *elem, node *root, bool on) {
+		node *insertElem(node *elem, node *root) {
 			if (elem == NULL) {
 				return (NULL);
 			}
 			if (elem->data < root->data) {
 				if (root->left)
-					insertElem(elem, root->left, on);
+					insertElem(elem, root->left);
 				else {
 					elem->parent = root;
 					root->left = elem;
-					if (on)
-						insertFix(elem);
+					insertFix(elem);
 				}
 			} else if (elem->data == root->data)
 				return (NULL);
 			else {
 				if (root->right)
-					insertElem(elem, root->right, on);
+					insertElem(elem, root->right);
 				else {
 					elem->parent = root;
 					root->right = elem;
-					if (on)
-						insertFix(elem);
+					insertFix(elem);
 				}
 			}
 			return (elem);
@@ -148,10 +147,28 @@ namespace ft {
 			root->color = black;
 		}
 
+		void transplant(node *u, node *v) {
+			if (u->parent == nullptr)
+				root = v;
+			else if (u == u->parent->left)
+				u->parent->left = v;
+			else
+				u->parent->right = v;
+			if (v)
+				v->parent = u->parent;
+		}
+
+		node *minimum(node *start) {
+			if (start->left)
+				return (minimum(start->left));
+			return (start);
+		}
+
 		void deleteElem(T data) {
 			node *x;
 			node *y;
 			node *toDel = root;
+			e_color saveColor;
 			while (toDel != NULL) {
 				if (toDel->data == data)
 					break;
@@ -162,77 +179,163 @@ namespace ft {
 			}
 			if (toDel == NULL)
 				return;
-			e_color saveColor = toDel->color;
-			if (toDel->left == NULL)
+			saveColor = toDel->color;
+			if (toDel->left == NULL) {
 				x = toDel->right;
-		}
-
-		void displayTree(node *root, std::string indent, bool last) {
-			if (root != NULL) {
-				std::cout << indent;
-				if (last) {
-					std::cout << "R----";
-					indent += "   ";
-				} else {
-					std::cout << "L----";
-					indent += "|  ";
+				transplant(toDel, x);
+			}
+			else if (toDel->right == NULL) {
+				x = toDel->left;
+				transplant(toDel, x);
+			}
+			else {
+				y = minimum(toDel->right);
+				saveColor = y->color;
+				x = y->right;
+				if (y->parent == toDel)
+					x->parent = y;
+				else {
+					transplant(y, y->right);
+					y->right = toDel->right;
+					y->right->parent = y;
 				}
-				std::string sColor = root->color ? REDC : BLACKC;
-				std::cout << sColor << root->data << RESETC << std::endl;
-				displayTree(root->left, indent, false);
-				displayTree(root->right, indent, true);
+				transplant(toDel, y);
+				y->left = toDel->left;
+				y->left->parent = y;
+				y->color = toDel->color;
 			}
+			delete toDel;
+			if (saveColor == black)
+				deleteFix(x);
 		}
 
-		void deleteTree(node *root) {
-			if (root == NULL)
-				return;
-			deleteTree(root->left);
-			deleteTree(root->right);
-			delete root;
+		void deleteFix(node* x) {
+			node* s;
+			while (x != root && x->color == black) {
+				if (x == x->parent->left) {
+					s = x->parent->right;
+					if (s->color == red) {
+						s->color = black;
+						x->parent->color = red;
+						rotateLeft(x->parent);
+						s = x->parent->right;
+					}
+
+					if (s->left->color == black && s->right->color == black) {
+						s->color = red;
+						x = x->parent;
+					} else {
+						if (s->right->color == black) {
+							s->left->color = black;
+							s->color = red;
+							rotateRight(s);
+							s = x->parent->right;
+						}
+
+						s->color = x->parent->color;
+						x->parent->color = black;
+						s->right->color = black;
+						rotateLeft(x->parent);
+						x = root;
+					}
+				} else {
+					s = x->parent->left;
+					if (s->color == red) {
+						s->color = black;
+						x->parent->color = red;
+						rotateRight(x->parent);
+						s = x->parent->left;
+					}
+
+					if (s->right->color == black && s->right->color == black) {
+						s->color = red;
+						x = x->parent;
+					} else {
+						if (s->left->color == black) {
+							s->right->color = black;
+							s->color = red;
+							rotateLeft(s);
+							s = x->parent->left;
+						}
+
+						s->color = x->parent->color;
+						x->parent->color = black;
+						s->left->color = black;
+						rotateRight(x->parent);
+						x = root;
+					}
+				}
+			}
+			x->color = black;
 		}
 
-		void rotateLeft(node *elem) {
-			if (elem == NULL || elem->parent == NULL || elem->parent->left == elem)
-				return;
-			node *parentElem = elem->parent;
-			node *gparentElem = elem->parent->parent;
-			parentElem->right = elem->left;
-			if (elem->left) {
-				elem->left->parent = parentElem;
-				elem->left = NULL;
+			void displayTree(node *root, std::string indent, bool last) {
+				if (root != NULL) {
+					std::cout << indent;
+					if (last) {
+						std::cout << "R----";
+						indent += "   ";
+					} else {
+						std::cout << "L----";
+						indent += "|  ";
+					}
+					std::string sColor = root->color ? REDC : BLACKC;
+					std::cout << sColor << root->data << RESETC << std::endl;
+					displayTree(root->left, indent, false);
+					displayTree(root->right, indent, true);
+				}
 			}
-			elem->parent = gparentElem;
-			if (gparentElem == NULL)
-				root = elem;
-			else if (gparentElem->left == parentElem)
-				gparentElem->left = elem;
-			else
-				gparentElem->right = elem;
-			elem->left = parentElem;
-			parentElem->parent = elem;
-		}
 
-		void rotateRight(node *elem) {
-			if (elem == NULL || elem->parent == NULL || elem->parent->right == elem)
-				return;
-			node *parentElem = elem->parent;
-			node *gparentElem = elem->parent->parent;
-			parentElem->left = elem->right;
-			if (elem->right) {
-				elem->right->parent = parentElem;
-				elem->right = NULL;
+			void deleteTree(node *root) {
+				if (root == NULL)
+					return;
+				deleteTree(root->left);
+				deleteTree(root->right);
+				delete root;
 			}
-			elem->parent = gparentElem;
-			if (gparentElem == NULL)
-				root = elem;
-			else if (gparentElem->left == parentElem)
-				gparentElem->left = elem;
-			else
-				gparentElem->right = elem;
-			elem->right = parentElem;
-			parentElem->parent = elem;
-		}
-	};
+
+			void rotateLeft(node *elem) {
+				if (elem == NULL || elem->parent == NULL || elem->parent->left == elem)
+					return;
+				node *parentElem = elem->parent;
+				node *gparentElem = elem->parent->parent;
+				parentElem->right = elem->left;
+				if (elem->left) {
+					elem->left->parent = parentElem;
+					elem->left = NULL;
+				}
+				elem->parent = gparentElem;
+				if (gparentElem == NULL)
+					root = elem;
+				else if (gparentElem->left == parentElem)
+					gparentElem->left = elem;
+				else
+					gparentElem->right = elem;
+				elem->left = parentElem;
+				parentElem->parent = elem;
+			}
+
+			void rotateRight(node *elem) {
+				if (elem == NULL || elem->parent == NULL || elem->parent->right == elem)
+					return;
+				node *parentElem = elem->parent;
+				node *gparentElem = elem->parent->parent;
+				parentElem->left = elem->right;
+				if (elem->right) {
+					elem->right->parent = parentElem;
+					elem->right = NULL;
+				}
+				elem->parent = gparentElem;
+				if (gparentElem == NULL)
+					root = elem;
+				else if (gparentElem->left == parentElem)
+					gparentElem->left = elem;
+				else
+					gparentElem->right = elem;
+				elem->right = parentElem;
+				parentElem->parent = elem;
+			}
+		};
 }
+
 #endif
