@@ -12,7 +12,7 @@ enum e_color
 };
 
 namespace ft {
-	template<typename T>
+	template<typename T, typename Alloc>
 	class tree
 	{
 	public:
@@ -23,27 +23,18 @@ namespace ft {
 			node *right;
 			node *parent;
 			e_color color;
-			bool empty;
 		};
 	private:
 		node *root;
 		node *elem;
 	public:
 		node *createElement() {
-			elem = new node;
-			elem->data = 0;
-			elem->empty = true;
-			elem->left = NULL;
-			elem->right = NULL;
-			elem->parent = NULL;
-			elem->color = red;
-			return (elem);
+			return (NULL);
 		}
 
 		node *createElement(T data) {
 			elem = new node;
 			elem->data = data;
-			elem->empty = false;
 			elem->left = NULL;
 			elem->right = NULL;
 			elem->parent = NULL;
@@ -56,6 +47,10 @@ namespace ft {
 
 		tree(T data) : root(createElement(data)) { root->color = black; }
 
+		tree(const tree& x) : root(NULL) {
+			*this = x;
+		}
+
 		/// Destructor ///
 		~tree() {
 			deleteTree(root);
@@ -64,6 +59,22 @@ namespace ft {
 		/// Geters ///
 		node *getRoot() {
 			return (root);
+		}
+
+		tree& operator=(const tree& x) {
+			if (!x || x.root == NULL || this == &x)
+				return (*this);
+			deleteTree(root);
+			copyElem(x.root);
+			return (*this);
+		}
+
+		void copyElem(node *toCopy) {
+			if (toCopy == NULL)
+				return ;
+			copyElem(toCopy->right);
+			copyElem(toCopy->left);
+			insertElem(createElement(toCopy->data), root);
 		}
 
 		node *getParent(node *elem) {
@@ -81,6 +92,10 @@ namespace ft {
 		node *insertElem(node *elem, node *root) {
 			if (elem == NULL) {
 				return (NULL);
+			}
+			if (root == NULL) {
+				root = elem;
+				return (root);
 			}
 			if (elem->data < root->data) {
 				if (root->left)
@@ -292,6 +307,7 @@ namespace ft {
 				deleteTree(root->left);
 				deleteTree(root->right);
 				delete root;
+				root = NULL;
 			}
 
 			void rotateLeft(node *elem) {

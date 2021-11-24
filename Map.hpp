@@ -92,6 +92,30 @@ namespace ft {
 		typedef typename iterator::difference_type 			difference_type;
 		typedef reverse_iterator<iterator>					const_reverse_iterator;
 		typedef reverse_iterator<iterator>					reverse_iterator;
+	protected:
+		tree<value_type> 	RBtree;
+		size_type 			_size;
+		Alloc				_alloc;
+
+		/// Constructor ///
+		explicit map (const key_compare& comp = key_compare(),
+					  const allocator_type& alloc = allocator_type()) : RBtree(NULL) {}
+
+		template <class InputIterator>
+		map (InputIterator first, typename enable_if<(ft::is_same<InputIterator, typename bidirectional_iterator::pointer>::value || is_same<InputIterator, bidirectional_iterator>::value) && !ft::is_integral<InputIterator>::value, InputIterator>::type last,
+			 const key_compare& comp = key_compare(),
+			 const allocator_type& alloc = allocator_type()) : RBtree(NULL) {
+			while (first != last) {
+		 		RBtree.insertElem(RBtree.createElement(*first), RBtree.getRoot());
+		 		first++;
+			}
+		}
+
+		map (const map& x) : RBtree(x.RBtree) {}
+
+		/// Operator ///
+
+		map & operator=(const map& x) {}
 	};
 }
 

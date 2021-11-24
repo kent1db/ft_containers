@@ -194,6 +194,8 @@ namespace ft {
 		/** Operator = **/
 
 		vector & operator=(const vector& x){
+			if (this == &x)
+				return (*this);
 			clear();
 			_capacity = x._capacity;
 			_alloc = x._alloc;

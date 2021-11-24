@@ -7,7 +7,7 @@
 
 int 	main(void){
 
-	ft::tree<int> it(10);
+	ft::tree<int> it;
 	it.insertElem(it.createElement(13), it.getRoot());
 	it.insertElem(it.createElement(20), it.getRoot());
 	it.insertElem(it.createElement(30), it.getRoot());
@@ -27,5 +27,6 @@ int 	main(void){
 	it.insertElem(it.createElement(45), it.getRoot());
 	it.deleteElem(43);
 	it.displayTree(it.getRoot(), "", true);
+
 	return (0);
 }
