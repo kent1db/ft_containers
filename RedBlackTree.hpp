@@ -3,9 +3,9 @@
 #include <iostream>
 #include "LexicoComp.hpp"
 
-#define REDC        "\x1B[31m"
-#define BLACKC    "\x1B[30m"
-#define RESETC    "\x1B[0m"
+#define REDC		"\x1B[31m"
+#define BLACKC		"\x1B[30m"
+#define RESETC		"\x1B[0m"
 enum e_color
 {
 	black, red
@@ -27,6 +27,7 @@ namespace ft {
 	private:
 		node *root;
 		node *elem;
+		Alloc _alloc;
 	public:
 		node *createElement() {
 			return (NULL);
@@ -34,7 +35,7 @@ namespace ft {
 
 		node *createElement(T data) {
 			elem = new node;
-			elem->data = data;
+			elem->data.first = data;
 			elem->left = NULL;
 			elem->right = NULL;
 			elem->parent = NULL;

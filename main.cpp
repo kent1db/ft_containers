@@ -7,7 +7,7 @@
 
 int 	main(void){
 
-	ft::tree<int> it;
+	ft::tree<int, std::allocator()> it;
 	it.insertElem(it.createElement(13), it.getRoot());
 	it.insertElem(it.createElement(20), it.getRoot());
 	it.insertElem(it.createElement(30), it.getRoot());
