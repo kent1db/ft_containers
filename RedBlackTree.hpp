@@ -12,7 +12,7 @@ enum e_color
 };
 
 namespace ft {
-	template<typename T, typename Alloc>
+	template<typename T, typename Alloc = std::allocator<T> >
 	class tree
 	{
 	public:
@@ -23,30 +23,31 @@ namespace ft {
 			node *right;
 			node *parent;
 			e_color color;
+
+			/// Constructor ///
+			node(T data) {
+				this->data = data;
+				this->left = NULL;
+				this->right = NULL;
+				this->parent = NULL;
+				this->color = red;
+			}
+
+			~node() {}
 		};
+		typedef typename Alloc::template rebind<node>::other node_alloc_type;
 	private:
+		node_alloc_type _alloc;
 		node *root;
 		node *elem;
-		Alloc _alloc;
 	public:
-		node *createElement() {
-			return (NULL);
-		}
-
-		node *createElement(T data) {
-			elem = new node;
-			elem->data.first = data;
-			elem->left = NULL;
-			elem->right = NULL;
-			elem->parent = NULL;
-			elem->color = red;
-			return (elem);
-		}
-
 		/// Constructor ///
-		tree() : root(createElement()) { root->color = black; }
+		tree() : _alloc(std::allocator<node>()), root(NULL) {}
 
-		tree(T data) : root(createElement(data)) { root->color = black; }
+		explicit tree(T data) : _alloc(std::allocator<node>()),  root(_alloc.allocate(1)) {
+			_alloc.construct(root, node(data));
+			root->color = black;
+		}
 
 		tree(const tree& x) : root(NULL) {
 			*this = x;
@@ -70,12 +71,18 @@ namespace ft {
 			return (*this);
 		}
 
+		node *createElem(T data) {
+			elem = _alloc.allocate(1);
+			_alloc.construct(elem, node(data));
+			return elem;
+		}
+
 		void copyElem(node *toCopy) {
 			if (toCopy == NULL)
 				return ;
 			copyElem(toCopy->right);
 			copyElem(toCopy->left);
-			insertElem(createElement(toCopy->data), root);
+			insertElem(createElem(toCopy->data), root);
 		}
 
 		node *getParent(node *elem) {
@@ -90,30 +97,30 @@ namespace ft {
 			return (elem->right);
 		}
 
-		node *insertElem(node *elem, node *root) {
+		node *insertElem(node *elem, node *start) {
 			if (elem == NULL) {
 				return (NULL);
 			}
-			if (root == NULL) {
+			if (start == NULL) {
 				root = elem;
 				return (root);
 			}
-			if (elem->data < root->data) {
-				if (root->left)
-					insertElem(elem, root->left);
+			if (elem->data < start->data) {
+				if (start->left)
+					insertElem(elem, start->left);
 				else {
-					elem->parent = root;
-					root->left = elem;
+					elem->parent = start;
+					start->left = elem;
 					insertFix(elem);
 				}
-			} else if (elem->data == root->data)
+			} else if (elem->data == start->data)
 				return (NULL);
 			else {
-				if (root->right)
-					insertElem(elem, root->right);
+				if (start->right)
+					insertElem(elem, start->right);
 				else {
-					elem->parent = root;
-					root->right = elem;
+					elem->parent = start;
+					start->right = elem;
 					insertFix(elem);
 				}
 			}
@@ -124,7 +131,7 @@ namespace ft {
 			if (elem == NULL || elem->parent == NULL)
 				return;
 			while (elem->parent->color == red) {
-				if (elem->parent == elem->parent->parent->left) {
+				if (elem->parent->parent && elem->parent == elem->parent->parent->left) {
 					if (elem->parent->parent->right && elem->parent->parent->right->color == red) {
 						elem->parent->parent->right->color = black;
 						elem->parent->color = black;
@@ -137,11 +144,12 @@ namespace ft {
 							elem = tmp;
 						}
 						elem->parent->color = black;
-						elem->parent->parent->color = red;
+						if (elem->parent->parent)
+							elem->parent->parent->color = red;
 						rotateRight(elem->parent);
 					}
 				} else {
-					if (elem->parent->parent->left && elem->parent->parent->left->color == red) {
+					if (elem->parent->parent && elem->parent->parent->left && elem->parent->parent->left->color == red) {
 						elem->parent->parent->left->color = black;
 						elem->parent->color = black;
 						elem->parent->parent->color = red;
@@ -153,7 +161,8 @@ namespace ft {
 							elem = tmp;
 						}
 						elem->parent->color = black;
-						elem->parent->parent->color = red;
+						if (elem->parent->parent)
+							elem->parent->parent->color = red;
 						rotateLeft(elem->parent);
 					}
 				}
@@ -184,6 +193,7 @@ namespace ft {
 			node *x;
 			node *y;
 			node *toDel = root;
+			node *parent = NULL;
 			e_color saveColor;
 			while (toDel != NULL) {
 				if (toDel->data == data)
@@ -198,18 +208,24 @@ namespace ft {
 			saveColor = toDel->color;
 			if (toDel->left == NULL) {
 				x = toDel->right;
+				parent = toDel->parent;
 				transplant(toDel, x);
 			}
 			else if (toDel->right == NULL) {
 				x = toDel->left;
+				parent = toDel->parent;
 				transplant(toDel, x);
 			}
 			else {
 				y = minimum(toDel->right);
 				saveColor = y->color;
 				x = y->right;
-				if (y->parent == toDel)
-					x->parent = y;
+				if (y->parent == toDel) {
+					if (x) {
+						parent = y;
+						x->parent = y;
+					}
+				}
 				else {
 					transplant(y, y->right);
 					y->right = toDel->right;
@@ -220,69 +236,73 @@ namespace ft {
 				y->left->parent = y;
 				y->color = toDel->color;
 			}
-			delete toDel;
-			if (saveColor == black)
-				deleteFix(x);
+			ft_delete(toDel);
+			if (saveColor == black && parent) {
+				deleteFix(x, parent);
+			}
 		}
 
-		void deleteFix(node* x) {
-			node* s;
-			while (x != root && x->color == black) {
-				if (x == x->parent->left) {
-					s = x->parent->right;
-					if (s->color == red) {
+		void deleteFix(node* x, node * parent) {
+			node *s;
+			while (parent && x != root && ( x == NULL || x->color == black)) {
+				std::cout << "oui\n";
+				if (x == parent->left) {
+					s = parent->right;
+					if (s && s->color == red) {
 						s->color = black;
-						x->parent->color = red;
-						rotateLeft(x->parent);
-						s = x->parent->right;
+						parent->color = red;
+						rotateLeft(parent);
+						s = parent->right;
 					}
-
-					if (s->left->color == black && s->right->color == black) {
+					if (s && s->left && s->left->color == black && s->right && s->right->color == black) {
 						s->color = red;
-						x = x->parent;
-					} else {
-						if (s->right->color == black) {
+						x = parent;
+					} else if (s && s->right){
+						if (s && s->right && s->right->color == black) {
 							s->left->color = black;
 							s->color = red;
 							rotateRight(s);
-							s = x->parent->right;
+							s = parent->right;
 						}
-
-						s->color = x->parent->color;
-						x->parent->color = black;
+						s->color = parent->color;
+						parent->color = black;
 						s->right->color = black;
-						rotateLeft(x->parent);
+						rotateLeft(parent);
 						x = root;
 					}
 				} else {
-					s = x->parent->left;
-					if (s->color == red) {
+					std::cout << "oui\n";
+					s = parent->left;
+					if (s && s->color == red) {
 						s->color = black;
-						x->parent->color = red;
-						rotateRight(x->parent);
-						s = x->parent->left;
+						parent->color = red;
+						rotateRight(parent);
+						s = parent->left;
 					}
-
-					if (s->right->color == black && s->right->color == black) {
+					if (s && s->right && s->right->color == black && s->left && s->left->color == black) {
 						s->color = red;
-						x = x->parent;
-					} else {
+						x = parent;
+					} else if (s && s->left){
 						if (s->left->color == black) {
 							s->right->color = black;
 							s->color = red;
 							rotateLeft(s);
-							s = x->parent->left;
+							s = parent->left;
 						}
-
-						s->color = x->parent->color;
-						x->parent->color = black;
+						s->color = parent->color;
+						parent->color = black;
 						s->left->color = black;
-						rotateRight(x->parent);
+						rotateRight(parent);
 						x = root;
 					}
 				}
 			}
-			x->color = black;
+			if (x)
+				x->color = black;
+		}
+
+			void display(void) {
+			displayTree(root, "", true);
 		}
 
 			void displayTree(node *root, std::string indent, bool last) {
@@ -302,12 +322,17 @@ namespace ft {
 				}
 			}
 
+			void ft_delete(node *toDel) {
+			_alloc.destroy(toDel);
+			_alloc.deallocate(toDel, 1);
+		}
+
 			void deleteTree(node *root) {
 				if (root == NULL)
 					return;
 				deleteTree(root->left);
 				deleteTree(root->right);
-				delete root;
+				ft_delete(root);
 				root = NULL;
 			}
 

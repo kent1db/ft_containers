@@ -3,30 +3,26 @@
 #include "Stack.hpp"
 #include <vector>
 #include "Map.hpp"
+#include <list>
+#include <algorithm>
 #include "RedBlackTree.hpp"
 
 int 	main(void){
-
-	ft::tree<int, std::allocator()> it;
-	it.insertElem(it.createElement(13), it.getRoot());
-	it.insertElem(it.createElement(20), it.getRoot());
-	it.insertElem(it.createElement(30), it.getRoot());
-	it.insertElem(it.createElement(53), it.getRoot());
-	it.insertElem(it.createElement(11), it.getRoot());
-	it.insertElem(it.createElement(21), it.getRoot());
-	it.insertElem(it.createElement(41), it.getRoot());
-	it.insertElem(it.createElement(61), it.getRoot());
-	it.insertElem(it.createElement(15), it.getRoot());
-	it.insertElem(it.createElement(31), it.getRoot());
-	it.insertElem(it.createElement(42), it.getRoot());
-	it.insertElem(it.createElement(43), it.getRoot());
-	it.insertElem(it.createElement(56), it.getRoot());
-	it.insertElem(it.createElement(36), it.getRoot());
-	it.insertElem(it.createElement(27), it.getRoot());
-	it.insertElem(it.createElement(52), it.getRoot());
-	it.insertElem(it.createElement(45), it.getRoot());
-	it.deleteElem(43);
-	it.displayTree(it.getRoot(), "", true);
-
+	int tab[] = {542, 247, 417, 453, 789, 554, 113, 486, 783, 138, 568, 723, 498, 334};
+	ft::tree<int> tree;
+	std::vector<int> vec(tab, tab + 14);
+	std::random_shuffle(vec.begin(), vec.end());
+	for (int i = 0; i < 14; i++)
+		tree.insertElem(tree.createElem(tab[i]), tree.getRoot());
+	int a = 0;
+	for (std::vector<int>::iterator it = vec.begin(); it != vec.end(); it++) {
+		tree.display();
+		std::cout << "__________________"<< *it << "____________________\n";
+		tree.deleteElem(*it);
+//		if (a == 4)
+//			break;
+		a++;
+		std::cout << a << std::endl;
+	}
 	return (0);
 }

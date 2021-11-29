@@ -94,7 +94,7 @@ namespace ft {
 		typedef reverse_iterator<iterator>					const_reverse_iterator;
 		typedef reverse_iterator<iterator>					reverse_iterator;
 	protected:
-		tree<value_type, Alloc> 	RBtree;
+		tree<value_type, allocator_type> 	RBtree;
 		size_type 			_size;
 		Alloc				_alloc;
 
