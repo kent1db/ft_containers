@@ -169,12 +169,12 @@ namespace ft {
 		template <typename InputIterator>
 		vector (InputIterator first, typename enable_if<(ft::is_same<InputIterator, typename random_access_iterator::pointer>::value || is_same<InputIterator, random_access_iterator>::value) && !ft::is_integral<InputIterator>::value, InputIterator>::type last, const allocator_type& alloc = allocator_type()) : _size(0), _capacity(0), _alloc(alloc){
 			size_type i = 0;
-			for (InputIterator it = first; it != last; it++){
+			for (InputIterator it = first; it != last; it++) {
 				_size++;
 			}
 			_capacity = capacity(_size);
 			_array = _alloc.allocate(_capacity);
-			for (InputIterator it = first; it != last; it++){
+			for (InputIterator it = first; it != last; it++) {
 				_alloc.construct(&_array[i++], *it);
 			}
 		}

@@ -220,12 +220,8 @@ namespace ft {
 				y = minimum(toDel->right);
 				saveColor = y->color;
 				x = y->right;
-				if (y->parent == toDel) {
-					if (x) {
-						parent = y;
-						x->parent = y;
-					}
-				}
+				if (y->parent == toDel)
+					parent = y;
 				else {
 					transplant(y, y->right);
 					y->right = toDel->right;
@@ -242,57 +238,75 @@ namespace ft {
 			}
 		}
 
+		bool isBlack(node *ptr) {
+			return ((ptr == NULL) || (ptr && ptr->color == black));
+		}
+
 		void deleteFix(node* x, node * parent) {
 			node *s;
-			while (parent && x != root && ( x == NULL || x->color == black)) {
-				std::cout << "oui\n";
+			while (parent && x != root && isBlack(x)) {
 				if (x == parent->left) {
 					s = parent->right;
+					std::cout << s->data << std::endl;
 					if (s && s->color == red) {
+						std::cout << "non\n";
 						s->color = black;
 						parent->color = red;
-						rotateLeft(parent);
+						rotateLeft(s);
 						s = parent->right;
 					}
-					if (s && s->left && s->left->color == black && s->right && s->right->color == black) {
+					if (s && isBlack(s->left) && isBlack(s->right)) {
 						s->color = red;
 						x = parent;
-					} else if (s && s->right){
-						if (s && s->right && s->right->color == black) {
-							s->left->color = black;
+						parent = parent->parent;
+						std::cout << x->data << std::endl;
+					} else {
+//						std::cout << "lol\n";
+						if (s && isBlack(s->right)) {
+//							std::cout << "lol\n";
+							if (s->left)
+								s->left->color = black;
 							s->color = red;
-							rotateRight(s);
+							rotateRight(s->left);
 							s = parent->right;
 						}
-						s->color = parent->color;
+						std::cout << "lol\n";
+
+						if (s)
+							s->color = parent->color;
 						parent->color = black;
-						s->right->color = black;
-						rotateLeft(parent);
+						if (s && s->right)
+							s->right->color = black;
+						rotateLeft(parent->right);
 						x = root;
 					}
+					display();
 				} else {
-					std::cout << "oui\n";
 					s = parent->left;
 					if (s && s->color == red) {
 						s->color = black;
 						parent->color = red;
-						rotateRight(parent);
+						rotateRight(s);
 						s = parent->left;
 					}
-					if (s && s->right && s->right->color == black && s->left && s->left->color == black) {
+					if (s && isBlack(s->left) && isBlack(s->right)) {
 						s->color = red;
 						x = parent;
-					} else if (s && s->left){
-						if (s->left->color == black) {
-							s->right->color = black;
+						parent = parent->parent;
+					} else {
+						if (s && isBlack(s->left)) {
+							if (s->right)
+								s->right->color = black;
 							s->color = red;
-							rotateLeft(s);
+							rotateLeft(s->right);
 							s = parent->left;
 						}
-						s->color = parent->color;
+						if (s)
+							s->color = parent->color;
 						parent->color = black;
-						s->left->color = black;
-						rotateRight(parent);
+						if (s && s->left)
+							s->left->color = black;
+						rotateRight(parent->left);
 						x = root;
 					}
 				}

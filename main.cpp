@@ -19,8 +19,8 @@ int 	main(void){
 		tree.display();
 		std::cout << "__________________"<< *it << "____________________\n";
 		tree.deleteElem(*it);
-//		if (a == 4)
-//			break;
+		if (a == 7)
+			break;
 		a++;
 		std::cout << a << std::endl;
 	}
