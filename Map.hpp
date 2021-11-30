@@ -13,7 +13,7 @@ namespace ft {
 	        	typename Alloc = std::allocator<pair<const Key, T > > >
 	class map
 	{
-		class bidirectional_iterator : public iterators_traits<iterator<bidirectional_iterator_tag, T > >
+	class bidirectional_iterator : public iterators_traits<iterator<bidirectional_iterator_tag, node<pair<const Key, T> > > >
 		{
 		protected:
 			typename bidirectional_iterator::pointer _p;
@@ -80,7 +80,7 @@ namespace ft {
 	public:
 		typedef Key											key_type;
 		typedef T											mapped_type;
-		typedef std::pair<const Key, T>						value_type;
+		typedef pair<const Key, T>							value_type;
 		typedef Compare										key_compare;
 		typedef Alloc										allocator_type;
 		typedef typename allocator_type::reference			reference;
@@ -94,19 +94,20 @@ namespace ft {
 		typedef reverse_iterator<iterator>					const_reverse_iterator;
 		typedef reverse_iterator<iterator>					reverse_iterator;
 	protected:
-		tree<Key, T, allocator_type, Compare> 	RBtree;
+		tree<Key, T, value_type, allocator_type, key_compare> 	RBtree;
 		size_type 			_size;
-		Alloc				_alloc;
+		allocator_type 		_alloc;
 		key_compare 		_comp;
 
+	public:
 		/// Constructor ///
 		explicit map (const key_compare& comp = key_compare(),
-					  const allocator_type& alloc = allocator_type()) : RBtree(NULL), _size(0), _alloc(alloc), _comp(comp) {}
+					  const allocator_type& alloc = allocator_type()) : RBtree(), _size(0), _alloc(alloc), _comp(comp) {}
 
 		template <class InputIterator>
 		map (InputIterator first, typename enable_if<(ft::is_same<InputIterator, typename bidirectional_iterator::pointer>::value || is_same<InputIterator, bidirectional_iterator>::value) && !ft::is_integral<InputIterator>::value, InputIterator>::type last,
 			 const key_compare& comp = key_compare(),
-			 const allocator_type& alloc = allocator_type()) : RBtree(NULL), _size(0), _alloc(alloc), _comp(comp) {
+			 const allocator_type& alloc = allocator_type()) : RBtree(), _size(0), _alloc(alloc), _comp(comp) {
 			while (first != last) {
 		 		RBtree.insert(*first);
 		 		first++;
@@ -119,7 +120,6 @@ namespace ft {
 		/// Destructor ///
 
 		~map() {
-			RBtree.deleteTree(RBtree.getRoot());
 			_size = 0;
 		}
 
@@ -130,14 +130,19 @@ namespace ft {
 			_size = x._size;
 		}
 
-//		iterator begin() {
-//			return ()
-//		}
-
-		const_iterator begin() const {
+		iterator begin() {
+			return (RBtree.minimum());
 		}
 
+		const_iterator begin() const {
+			return (RBtree.minimum());
+		}
 
+		/// Insert ///
+		pair<iterator,bool> insert(const value_type& val) {
+			_size++;
+			return (make_pair(RBtree.insert(val), RBtree.notExist(val, RBtree.getRoot())));
+		}
 
 	};
 }

@@ -137,6 +137,8 @@ namespace ft {
 		typedef random_access_iterator						const_iterator;
 		typedef ptrdiff_t									difference_type;
 		typedef size_t										size_type;
+		typedef reverse_iterator<random_access_iterator>	const_reverse_iterator;
+		typedef reverse_iterator<random_access_iterator>	reverse_iterator;
 		class outOfRange : std::exception {
 			const char* what() const throw (){
 				return ("Out of Range");
@@ -213,6 +215,21 @@ namespace ft {
 
 		const_iterator begin() const{
 			return (&_array[0]);
+		}
+
+		reverse_iterator rbegin() {
+			return (reverse_iterator(end()));
+		}
+
+		const_reverse_iterator rbegin() const {
+			return (reverse_iterator(end()));
+		}
+
+		reverse_iterator rend() {
+			return (reverse_iterator(begin()));
+		}
+		const_reverse_iterator rend() const {
+			return (reverse_iterator(begin()));
 		}
 
 		const_iterator end() const{

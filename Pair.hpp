@@ -8,23 +8,17 @@ namespace ft {
 	class pair
 	{
 	public:
-		pair() {};
+		pair(): first(0), second(0) {};
 
 		template<typename V, typename W>
-		pair(const pair<V, W> &pr) {
-			first = pr.first;
-			second = pr.second;
-		}
+		pair(const pair<V, W> &pr) : first(pr.first), second(pr.second) {}
 
-		pair(T1 first, T2 second) {
-			this->first = first;
-			this->second = second;
-		}
+		pair(T1 const &first, T2 const &second) : first(first), second(second) {}
 
-		pair &operator=(const pair &pr) {
-			this->first = pr.first;
-			this->second = pr.second;
-			return (*this);
+		pair& operator=(pair const& __p) {
+			first = __p.first;
+			second = __p.second;
+			return *this;
 		}
 
 		bool operator==(ft::pair<T1, T2> const &inst) {

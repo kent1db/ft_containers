@@ -41,4 +41,4 @@ fclean:
 
 re:				fclean all
 
-.PHONY: all clean fclean re bonus init%
+.PHONY: all clean fclean re bonus init
