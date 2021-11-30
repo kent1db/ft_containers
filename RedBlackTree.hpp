@@ -2,17 +2,17 @@
 #define RBTREE_HPP
 #include <iostream>
 #include "LexicoComp.hpp"
-
 #define REDC		"\x1B[31m"
-#define BLACKC		"\x1B[30m"
+#define BLACKC		"\x1B[37m"
 #define RESETC		"\x1B[0m"
+
 enum e_color
 {
 	black, red
 };
 
 namespace ft {
-	template<typename T, typename Alloc = std::allocator<T> >
+	template<typename Key, typename V, typename T = ft::pair<Key, V>,  typename Alloc = std::allocator<T>, typename Compare = std::less<Key> >
 	class tree
 	{
 	public:
@@ -64,14 +64,23 @@ namespace ft {
 		}
 
 		tree& operator=(const tree& x) {
-			if (!x || x.root == NULL || this == &x)
+			if (x.root == NULL || this == &x)
 				return (*this);
 			deleteTree(root);
 			copyElem(x.root);
 			return (*this);
 		}
 
+		bool findKey(T data, node *root) {
+			if (data.first == root->data.first)
+				return true;
+			findKey(data, root->left);
+			findKey(data, root->right);
+		}
+
 		node *createElem(T data) {
+			if (findKey(data), root)
+				return (NULL);
 			elem = _alloc.allocate(1);
 			_alloc.construct(elem, node(data));
 			return elem;
@@ -80,9 +89,9 @@ namespace ft {
 		void copyElem(node *toCopy) {
 			if (toCopy == NULL)
 				return ;
+			insertElem(createElem(toCopy->data), root);
 			copyElem(toCopy->right);
 			copyElem(toCopy->left);
-			insertElem(createElem(toCopy->data), root);
 		}
 
 		node *getParent(node *elem) {
@@ -105,7 +114,7 @@ namespace ft {
 				root = elem;
 				return (root);
 			}
-			if (elem->data < start->data) {
+			if (elem->data.first < start->data.first) {
 				if (start->left)
 					insertElem(elem, start->left);
 				else {
@@ -113,7 +122,7 @@ namespace ft {
 					start->left = elem;
 					insertFix(elem);
 				}
-			} else if (elem->data == start->data)
+			} else if (elem->data.first == start->data.first)
 				return (NULL);
 			else {
 				if (start->right)
@@ -125,6 +134,10 @@ namespace ft {
 				}
 			}
 			return (elem);
+		}
+
+		node *insert(T data){
+			return (insertElem(createElem(data), root));
 		}
 
 		void insertFix(node *elem) {
@@ -196,9 +209,9 @@ namespace ft {
 			node *parent = NULL;
 			e_color saveColor;
 			while (toDel != NULL) {
-				if (toDel->data == data)
+				if (toDel->data.first == data.first)
 					break;
-				if (toDel->data > data)
+				if (toDel->data.first > data.first)
 					toDel = toDel->left;
 				else
 					toDel = toDel->right;
@@ -223,6 +236,7 @@ namespace ft {
 				if (y->parent == toDel)
 					parent = y;
 				else {
+					parent = y->parent;
 					transplant(y, y->right);
 					y->right = toDel->right;
 					y->right->parent = y;
@@ -247,9 +261,7 @@ namespace ft {
 			while (parent && x != root && isBlack(x)) {
 				if (x == parent->left) {
 					s = parent->right;
-					std::cout << s->data << std::endl;
 					if (s && s->color == red) {
-						std::cout << "non\n";
 						s->color = black;
 						parent->color = red;
 						rotateLeft(s);
@@ -259,19 +271,14 @@ namespace ft {
 						s->color = red;
 						x = parent;
 						parent = parent->parent;
-						std::cout << x->data << std::endl;
 					} else {
-//						std::cout << "lol\n";
 						if (s && isBlack(s->right)) {
-//							std::cout << "lol\n";
 							if (s->left)
 								s->left->color = black;
 							s->color = red;
 							rotateRight(s->left);
 							s = parent->right;
 						}
-						std::cout << "lol\n";
-
 						if (s)
 							s->color = parent->color;
 						parent->color = black;
@@ -280,7 +287,6 @@ namespace ft {
 						rotateLeft(parent->right);
 						x = root;
 					}
-					display();
 				} else {
 					s = parent->left;
 					if (s && s->color == red) {
@@ -330,7 +336,7 @@ namespace ft {
 						indent += "|  ";
 					}
 					std::string sColor = root->color ? REDC : BLACKC;
-					std::cout << sColor << root->data << RESETC << std::endl;
+					std::cout << sColor << root->data.first << RESETC << std::endl;
 					displayTree(root->left, indent, false);
 					displayTree(root->right, indent, true);
 				}

@@ -3,8 +3,6 @@
 
 #include "Vector.hpp"
 #include "Iterator.hpp"
-#include <iostream>
-
 namespace ft {
 	template <typename T, typename Container = ft::vector<T> >
 	class stack {
@@ -74,5 +72,7 @@ namespace ft {
 		return !(lhs < rhs);
 	}
 }
+
+#include <iostream>
 
 #endif

@@ -2,27 +2,25 @@
 #include <iterator>
 #include "Stack.hpp"
 #include <vector>
+#include <map>
+#include "Pair.hpp"
 #include "Map.hpp"
 #include <list>
 #include <algorithm>
 #include "RedBlackTree.hpp"
 
 int 	main(void){
-	int tab[] = {542, 247, 417, 453, 789, 554, 113, 486, 783, 138, 568, 723, 498, 334};
-	ft::tree<int> tree;
-	std::vector<int> vec(tab, tab + 14);
-	std::random_shuffle(vec.begin(), vec.end());
-	for (int i = 0; i < 14; i++)
-		tree.insertElem(tree.createElem(tab[i]), tree.getRoot());
-	int a = 0;
-	for (std::vector<int>::iterator it = vec.begin(); it != vec.end(); it++) {
-		tree.display();
-		std::cout << "__________________"<< *it << "____________________\n";
-		tree.deleteElem(*it);
-		if (a == 7)
-			break;
-		a++;
-		std::cout << a << std::endl;
+	int tab[] = {1, 45, 73, 49, 279, 348, 751, 66, 423, 44};
+	int i = 0;
+	std::map<int, char> map;
+	while (i < 10) {
+		std::pair<int, char> a(tab[i], 0);
+		map.insert(a);
+		i++;
+	}
+	for (std::map<int, char>::iterator it = map.begin(); it != map.end(); it++) {
+		std::cout << it->first << std::endl;
 	}
 	return (0);
 }
+
