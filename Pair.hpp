@@ -8,7 +8,7 @@ namespace ft {
 	class pair
 	{
 	public:
-		pair(): first(0), second(0) {};
+		pair(): first(), second() {};
 
 		template<typename V, typename W>
 		pair(const pair<V, W> &pr) : first(pr.first), second(pr.second) {}

@@ -12,17 +12,17 @@ enum e_color
 };
 
 namespace ft {
-	template <typename T>
+	template <typename P>
 	struct node
 		{
-			T data;
+			P data;
 			node *left;
 			node *right;
 			node *parent;
 			e_color color;
 
 			/// Constructor ///
-			node(const T &cp) : data(cp) {
+			node(const P &cp) : data(cp) {
 				this->left = NULL;
 				this->right = NULL;
 				this->parent = NULL;
@@ -30,11 +30,11 @@ namespace ft {
 			}
 			~node() {}
 		};
-	template<typename Key, typename V, typename T = ft::pair<const Key, V>,  typename Alloc = std::allocator<T>, typename Compare = std::less<Key> >
+	template<typename Key, typename V, typename P = ft::pair<const Key, V>,  typename Alloc = std::allocator<P>, typename Compare = std::less<Key> >
 	class tree
 	{
 	public:
-		typedef node<T>												node;
+		typedef node<P>												node;
 		typedef typename Alloc::template rebind<node >::other node_alloc_type;
 	private:
 		node_alloc_type _alloc;
@@ -45,7 +45,7 @@ namespace ft {
 		/// Constructor ///
 		tree() : _alloc(std::allocator<node >()), root(NULL), elem(NULL), _comp(std::less<Key >())  {}
 
-		explicit tree(T data) : _alloc(std::allocator<node >()),  root(_alloc.allocate(1)), elem(NULL), _comp(std::less<Key >()) {
+		explicit tree(P data) : _alloc(std::allocator<node >()),  root(_alloc.allocate(1)), elem(NULL), _comp(std::less<Key >()) {
 			_alloc.construct(root, node(data));
 			root->color = black;
 		}
@@ -73,7 +73,18 @@ namespace ft {
 			return (*this);
 		}
 
-		bool notExist(T data, node *start){
+		node *find(Key key, node *start){
+			if (start == NULL)
+				return (NULL);
+			else if (key == start->data.first)
+				return (start);
+			else if (_comp(key, start->data.first))
+				return (find(key, start->left));
+			else
+				return (find(key, start->right));
+		}
+
+		bool notExist(P data, node *start){
 			if (start == NULL)
 				return(true);
 			else if (data.first == start->data.first)
@@ -84,7 +95,7 @@ namespace ft {
 				return (notExist(data, start->right));
 		}
 
-		node *findKey(T data, node *start) {
+		node *findKey(P data, node *start) {
 			if (start == NULL)
 				return (NULL);
 			else if (data.first == start->data.first)
@@ -95,7 +106,7 @@ namespace ft {
 				return (findKey(data, start->right));
 		}
 
-		node *createElem(const T data) {
+		node *createElem(const P data) {
 			elem = _alloc.allocate(1);
 			_alloc.construct(elem, node(data));
 			return elem;
@@ -151,7 +162,7 @@ namespace ft {
 			return (elem);
 		}
 
-		node *insert(T data){
+		node *insert(P data){
 			if (notExist(data, root))
 				return (insertElem(createElem(data), root));
 			return (findKey(data, root));
@@ -213,17 +224,27 @@ namespace ft {
 				v->parent = u->parent;
 		}
 
+		node *maximum() {
+			return (maximumRec(root));
+		}
+
+		node *maximumRec(node *start) {
+			if (start->right)
+				return (maximumRec(start->right));
+			return (start);
+		}
+
 		node *minimum() {
 			return (minimumRec(root));
 		}
 
 		node *minimumRec(node *start) {
 			if (start->left)
-				return (minimum(start->left));
+				return (minimumRec(start->left));
 			return (start);
 		}
 
-		void deleteElem(T data) {
+		void deleteElem(P data) {
 			node *x;
 			node *y;
 			node *toDel = root;
