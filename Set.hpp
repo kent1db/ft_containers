@@ -1,5 +1,5 @@
-#ifndef MAP_HPP
-#define MAP_HPP
+#ifndef SET_HPP
+#define SET_HPP
 #include <iostream>
 #include "Iterator.hpp"
 #include "RedBlackTree.hpp"
@@ -7,27 +7,27 @@
 #include "Pair.hpp"
 
 namespace ft {
-	template <	typename Key,
-	        	typename T,
-	        	typename Compare = std::less<Key>,
-	        	typename Alloc = std::allocator<pair<const Key, T > > >
-	class map
+	template <
+			typename T,
+			typename Compare = std::less<T>,
+			typename Alloc = std::allocator<T> >
+	class set
 	{
-	class bidirectional_iterator : public iterators_traits<iterator<bidirectional_iterator_tag, pair<const Key, T> > >
+		class bidirectional_iterator : public iterators_traits<iterator<bidirectional_iterator_tag, T > >
 		{
 		private:
 			void modifyValueType() {
 				if (_node)
-					_p = &_node->data;
+					_p = &_node->data.second;
 				else
 					_p = NULL;
 			}
 		protected:
-			node<pair<const Key, T> > * _node;
+			node<pair<T, T> > * _node;
 			typename bidirectional_iterator::pointer _p;
 		public:
 			/* Constructor */
-			bidirectional_iterator(node<pair<const Key, T> > *nodeCopy) : _node(nodeCopy) {
+			bidirectional_iterator(node<pair<T, T> > *nodeCopy) : _node(nodeCopy) {
 				modifyValueType();
 			}
 
@@ -70,7 +70,7 @@ namespace ft {
 				if (_node == NULL)
 					return (*this);
 				if (_node->right == NULL) {
-					node<pair<const Key, T> > *parent = _node->parent;
+					node<pair<T, T> > *parent = _node->parent;
 					while (parent && _node == parent->right) {
 						_node = parent;
 						parent = parent->parent;
@@ -97,7 +97,7 @@ namespace ft {
 				if (_node == NULL)
 					return (*this);
 				if (_node->left == NULL) {
-					node<pair<const Key, T> > *parent = _node->parent;
+					node<pair<T, T> > *parent = _node->parent;
 					while (parent && _node == parent->left) {
 						_node = parent;
 						parent = parent->parent;
@@ -121,9 +121,8 @@ namespace ft {
 			}
 		};
 	public:
-		typedef Key											key_type;
-		typedef T											mapped_type;
-		typedef pair<const Key, T>							value_type;
+		typedef T											key_type;
+		typedef T											value_type;
 		typedef Compare										key_compare;
 		typedef Alloc										allocator_type;
 		typedef typename allocator_type::reference			reference;
@@ -137,38 +136,38 @@ namespace ft {
 		typedef reverse_iterator<iterator>					const_reverse_iterator;
 		typedef reverse_iterator<iterator>					reverse_iterator;
 	protected:
-		tree<Key, T, value_type, allocator_type, key_compare> 	RBtree;
+		tree<T, T, ft::pair<T, T>, allocator_type, key_compare> 	RBtree;
 		size_type 			_size;
 		allocator_type 		_alloc;
 		key_compare 		_comp;
 
 	public:
 		/// Constructor ///
-		explicit map (const key_compare& comp = key_compare(),
+		explicit set (const key_compare& comp = key_compare(),
 					  const allocator_type& alloc = allocator_type()) : RBtree(), _size(0), _alloc(alloc), _comp(comp) {}
 
 		template <class InputIterator>
-		map (InputIterator first, typename enable_if<(ft::is_same<InputIterator, typename bidirectional_iterator::pointer>::value || is_same<InputIterator, bidirectional_iterator>::value) && !ft::is_integral<InputIterator>::value, InputIterator>::type last,
+		set (InputIterator first, typename enable_if<(ft::is_same<InputIterator, typename bidirectional_iterator::pointer>::value || is_same<InputIterator, bidirectional_iterator>::value) && !ft::is_integral<InputIterator>::value, InputIterator>::type last,
 			 const key_compare& comp = key_compare(),
 			 const allocator_type& alloc = allocator_type()) : RBtree(), _size(0), _alloc(alloc), _comp(comp) {
 			while (first != last) {
-		 		RBtree.insert(*first);
-		 		first++;
+				RBtree.insert(*first);
+				first++;
 				_size++;
 			}
 		}
 
-		map (const map& x) : RBtree(x.RBtree), _size(x._size), _alloc(x._alloc), _comp(x._comp) {}
+		set (const set& x) : RBtree(x.RBtree), _size(x._size), _alloc(x._alloc), _comp(x._comp) {}
 
 		/// Destructor ///
 
-		~map() {
+		~set() {
 			clear();
 		}
 
 		/// Operator ///
 
-		map & operator=(const map& x) {
+		set & operator=(const set& x) {
 			RBtree = x.RBtree;
 			_size = x._size;
 		}
@@ -191,14 +190,14 @@ namespace ft {
 		}
 
 		reverse_iterator rbegin() {
-			node<pair<const Key, T> > *node = RBtree.createElem(ft::pair<const Key, T>(0, 0));
+			node<pair<T, T> > *node = RBtree.createElem(ft::pair<T, T>(0, 0));
 			node->parent = RBtree.maximum();
 			iterator it(node);
 			return (reverse_iterator(it));
 		}
 
 		const_reverse_iterator rbegin() const {
-			node<pair<const Key, T> > *node = RBtree.createElem(ft::pair<const Key, T>(0, 0));
+			node<pair<T, T> > *node = RBtree.createElem(ft::pair<T, T>(0, 0));
 			node->parent = RBtree.maximum();
 			iterator it(node);
 			return (reverse_iterator(it));
@@ -222,32 +221,22 @@ namespace ft {
 		}
 
 		size_type max_size() const {
-			return (std::numeric_limits<size_t>::max() / sizeof(node<pair<const Key, T> >));
-		}
-
-		/// Element acces ///
-		mapped_type& operator[](const key_type& k) {
-			if (RBtree.find(k, RBtree.getRoot()))
-				return ((RBtree.find(k, RBtree.getRoot()))->data.second);
-			pair<key_type , mapped_type> p;
-			p.first = k;
-			_size++;
-			return (RBtree.insert(p)->data.second);
+			return (std::numeric_limits<size_t>::max() / sizeof(node<pair<T, T> >));
 		}
 
 		/// Modifier ///
 		pair<iterator,bool> insert(const value_type& val) {
-			bool notExist = RBtree.notExist(val, RBtree.getRoot());
+			bool notExist = RBtree.notExist(ft::make_pair(val, val), RBtree.getRoot());
 			if (notExist)
 				_size++;
-			return (ft::make_pair(RBtree.insert(val), notExist));
+			return (ft::make_pair(RBtree.insert(ft::make_pair(val, val)), notExist));
 		}
 
 		iterator insert(iterator position, const value_type& val) {
 			(void)position;
-			if (RBtree.notExist(val, RBtree.getRoot()))
+			if (RBtree.notExist(ft::make_pair(val, val), RBtree.getRoot()))
 				_size++;
-			return(RBtree.insert(val));
+			return(RBtree.insert(ft::make_pair(val, val)));
 		}
 
 		template <class InputIterator>
@@ -266,8 +255,8 @@ namespace ft {
 			}
 		}
 
-		size_type erase(const key_type& k) {
-			node<value_type> *elem = NULL;
+		size_type erase(const value_type& k) {
+			node<pair<T, T> > *elem = NULL;
 			if ((elem = RBtree.find(k, RBtree.getRoot()))) {
 				RBtree.deleteElem(elem->data);
 				_size--;
@@ -287,8 +276,8 @@ namespace ft {
 			}
 		}
 
-		void swap(map& x) {
-			map tmp(*this);
+		void swap(set& x) {
+			set tmp(*this);
 			*this = x;
 			x = tmp;
 		}
@@ -305,7 +294,7 @@ namespace ft {
 		}
 
 		class value_compare {
-			friend class map;
+			friend class set;
 
 		protected:
 			Compare comp;
@@ -313,7 +302,7 @@ namespace ft {
 			value_compare(Compare c) : comp(c) {}
 		public:
 			bool operator()(const value_type &x, const value_type &y) const {
-				return comp(x.first, y.first);
+				return comp(x, y);
 			}
 		};
 
@@ -323,53 +312,54 @@ namespace ft {
 
 		/// Operations ///
 
-		iterator find(const key_type& k) {
+		iterator find(const value_type& k) {
 			return (RBtree.find(k, RBtree.getRoot()));
 		}
 
-		const_iterator find(const key_type& k) const {
+		const_iterator find(const value_type& k) const {
 			return (RBtree.find(k, RBtree.getRoot()));
 		}
 
-		size_type count(const key_type& k) const {
+		size_type count(const value_type& k) const {
 			return ((find(k) == NULL) ? 0 : 1);
 		}
 
-		iterator lower_bound(const key_type& k) {
+		iterator lower_bound(const value_type& k) {
 			iterator it = begin();
-			while (it != end() && _comp(it->first, k))
+			while (it != end() && _comp(*it, k))
 				it++;
 			return (it);
 		}
 
-		const_iterator lower_bound(const key_type& k) const {
+		const_iterator lower_bound(const value_type& k) const {
 			const_iterator it = begin();
-			while (it != end() && _comp(it->first, k))
+			while (it != end() && _comp(*it, k))
 				it++;
 			return (it);
 		}
 
-		iterator upper_bound(const key_type& k) {
+		iterator upper_bound(const value_type& k) {
 			iterator it = begin();
-			while (it != end() && (_comp(it->first, k) || it->first == k))
+			while (it != end() && (_comp(*it, k) || *it == k))
 				it++;
 			return (it);
 		}
 
-		const_iterator upper_bound (const key_type& k) const {
+		const_iterator upper_bound (const value_type& k) const {
 			const_iterator it = begin();
-			while (it != end() && (_comp(it->first, k) || it->first == k))
+			while (it != end() && (_comp(*it, k) || *it == k))
 				it++;
 			return (it);
 		}
 
-		pair<const_iterator,const_iterator>	equal_range(const key_type& k) const {
+		pair<const_iterator,const_iterator>	equal_range(const value_type& k) const {
 			return (ft::make_pair(lower_bound(k), upper_bound(k)));
 		}
 
-		pair<iterator,iterator>	equal_range(const key_type& k) {
+		pair<iterator,iterator>	equal_range(const value_type& k) {
 			return (ft::make_pair(lower_bound(k), upper_bound(k)));
 		}
+
 
 		void display(){
 			RBtree.display();

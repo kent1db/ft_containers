@@ -2,7 +2,7 @@ NAME			= container
 
 FILES			=  main.cpp
 
-INC_FILES		= Vector.hpp Iterator.hpp Enable.hpp Map.hpp RedBlackTree.hpp LexicoComp.hpp
+INC_FILES		= Vector.hpp Iterator.hpp Enable.hpp Map.hpp RedBlackTree.hpp LexicoComp.hpp Set.hpp
 INC_PATH		= .
 INC				= $(addprefix ${INC_PATH}/, ${INC_FILES})
 
