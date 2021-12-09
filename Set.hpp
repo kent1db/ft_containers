@@ -29,7 +29,7 @@ namespace ft {
 		public:
 			/* Constructor */
 			bidirectional_iterator(node<pair<T, T> > *nodeCopy) : _node(nodeCopy) {
-				modifyValueType();
+                modifyValueType();
 			}
 
 			// Default constructor
@@ -152,7 +152,7 @@ namespace ft {
 			 const key_compare& comp = key_compare(),
 			 const allocator_type& alloc = allocator_type()) : RBtree(), _size(0), _alloc(alloc), _comp(comp) {
 			while (first != last) {
-				RBtree.insert(*first);
+				RBtree.insert(ft::make_pair(*first, 0));
 				first++;
 				_size++;
 			}
@@ -250,8 +250,8 @@ namespace ft {
 		}
 
 		void erase(iterator position) {
-			if (position != NULL && RBtree.findKey(*position, RBtree.getRoot())) {
-				RBtree.deleteElem(*position);
+			if (position != NULL && RBtree.findKey(ft::make_pair(*position, 0), RBtree.getRoot())) {
+				RBtree.deleteElem(ft::make_pair(*position, 0));
 				_size--;
 			}
 		}
@@ -278,9 +278,16 @@ namespace ft {
 		}
 
 		void swap(set& x) {
-			set tmp(*this);
-			*this = x;
-			x = tmp;
+            RBtree.swap(x.RBtree);
+            size_type 			tmp_size = x._size;
+            allocator_type 		tmp_alloc = x._alloc;
+            key_compare 		tmp_comp = x._comp;
+            x._size = _size;
+            x._alloc = _alloc;
+            x._comp = _comp;
+            _size = tmp_size;
+            _alloc = tmp_alloc;
+            _comp = tmp_comp;
 		}
 
 		void clear() {

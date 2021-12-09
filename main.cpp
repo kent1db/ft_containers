@@ -5,6 +5,7 @@
 #include <map>
 #include "Pair.hpp"
 #include "Map.hpp"
+#include <set>
 #include <list>
 #include <algorithm>
 #include "RedBlackTree.hpp"
@@ -737,7 +738,7 @@ void Stack_Operator2_TEST(void) {
 	displayStatus("Stack Operator 2");
 }
 
-void Pair_Constructor_TEST() {
+void Pair_Constructor_Map_TEST() {
 	i = 0;
 	ft::pair<int, int> pair;
 	pair = ft::make_pair(15, 'a');
@@ -749,7 +750,7 @@ void Pair_Constructor_TEST() {
 	displayStatus("Pair Works With Make Pair And With Constructor");
 }
 
-void Pair_OperatorEqual_TEST() {
+void Pair_OperatorEqual_Map_TEST() {
 	ft::pair<std::string, int> planet, homeplanet;
 	planet = ft::make_pair("Earth", 6371);
 	homeplanet = planet;
@@ -760,7 +761,7 @@ void Pair_OperatorEqual_TEST() {
 	displayStatus("Operator Equal");
 }
 
-void Pair_Relational_Operator_TEST() {
+void Pair_Relational_Operator_Map_TEST() {
 	ft::pair<int, char> foo(10, 'z');
 	ft::pair<int, char> bar(90, 'a');
 	EXPECT_EQ((foo == bar), false);
@@ -779,7 +780,7 @@ void Pair_Relational_Operator_TEST() {
 		bool operator()(const char &lhs, const char &rhs) const { return lhs < rhs; }
 	};
 
-void	Constructor_TEST(){
+void	Constructor_Map_TEST(){
 
 	ft::map<char, int> first;
 
@@ -799,7 +800,7 @@ void	Constructor_TEST(){
 	displayStatus("Constructor");
 }
 
-void	Begin_End_TEST() {
+void	Begin_End_Map_TEST() {
 	ft::map<char, int> mymap;
 	std::map<char, int> map;
 
@@ -823,7 +824,7 @@ void	Begin_End_TEST() {
 	displayStatus("Begin and End");
 }
 
-void	RBegin_REnd_TEST() {
+void	RBegin_REnd_Map_TEST() {
 	ft::map<char, int> mymap;
 	std::map<char, int> map;
 
@@ -847,7 +848,7 @@ void	RBegin_REnd_TEST() {
 	displayStatus("RBegin and REnd");
 }
 
-void 	Empty_Erase_TEST(void){
+void 	Empty_Erase_Map_TEST(void){
 	ft::map<char, int> mymap;
 	std::map<char, int> map;
 
@@ -918,7 +919,7 @@ void    Insert_Map_TEST(){
     displayStatus("Insert");
 }
 
-void    Swap_Map(){
+void    Swap_Map_TEST(){
     std::map<char, int> foo, bar;
     ft::map<char, int> myfoo, mybar;
 
@@ -975,7 +976,7 @@ void    Clear_Map_TEST(){
     displayStatus("Clear");
 }
 
-void    Key_Comp_TEST(){
+void    Key_Comp_Map_TEST(){
     ft::map<char, int> mymap;
     std::map<char, int> map;
 
@@ -1012,7 +1013,7 @@ void    Find_Map_TEST(){
     displayStatus("Find");
 }
 
-void    Lower_Upper_Bound(){
+void    Lower_Upper_Bound_MAP_TEST(){
     ft::map<char, int> mymap;
     ft::map<char, int>::iterator myitlow, myitup;
     std::map<char, int> map;
@@ -1038,7 +1039,7 @@ void    Lower_Upper_Bound(){
     displayStatus("Upper and Lower Bound");
 }
 
-void        Equal_Range(){
+void        Equal_Range_MAP_TEST(){
     ft::map<char, int> mymap;
     std::map<char, int> map;
 
@@ -1058,6 +1059,241 @@ void        Equal_Range(){
     EXPECT_EQ(ret.second->second, myret.second->second);
     displayStatus("Equal Range");
 }
+
+bool sfncomp(int lhs, int rhs) { return lhs < rhs; }
+
+struct sclasscomp {
+    bool operator()(const int &lhs, const int &rhs) const { return lhs < rhs; }
+};
+
+void	Constructor_SET_TEST(){
+
+    ft::set<int> first;
+
+    int myints[]= {10,20,30,40,50};
+    ft::set<int> second (myints,myints+5);
+
+    ft::set<int> third(second);
+
+    ft::set<int> fourth (second.begin(), second.end());
+    ft::set<int,classcomp> fifth;
+    bool (*sfn_pt)(int, int) = sfncomp;
+    ft::set<int, bool (*)(int, int)> sixth(sfn_pt);
+    displayStatus("Constructor");
+}
+
+void	Begin_End_SET_TEST() {
+    int myints[] = {75,23,65,42,13};
+    ft::set<int> myset (myints,myints+5);
+    std::set<int> set (myints,myints+5);
+
+    ft::set<int>::iterator it = myset.begin();
+    std::set<int>::iterator it2 = set.begin();
+    std::cout << *(myset.begin()) << std::endl;
+    std::cout << *it << std::endl;
+    for (int i = 0; i < 3; i++) {
+        EXPECT_EQ(*it, *it2);
+        it++;
+        it2++;
+    }
+    displayStatus("Begin and End");
+}
+
+void	RBegin_REnd_SET_TEST() {
+    int myints[] = {75,23,65,42,13};
+    ft::set<int> myset (myints,myints+5);
+    std::set<int> set (myints,myints+5);
+
+    // show content:
+    ft::set<int>::reverse_iterator it = myset.rbegin();
+    std::set<int>::reverse_iterator it2 = set.rbegin();
+    for (int i = 0; i < 3; i++) {
+        EXPECT_EQ(*it, *it2);
+        it++;
+        it2++;
+    }
+    displayStatus("RBegin and REnd");
+}
+
+void 	Empty_Erase_SET_TEST(void){
+    int myints[] = {75,23,65,42,13};
+    ft::set<int> myset (myints,myints+5);
+    std::set<int> set (myints,myints+5);
+
+    for (int i = 0; i < 3; i++) {
+        myset.erase(myset.begin());
+        set.erase(set.begin());
+    }
+    EXPECT_EQ(myset.empty(), set.empty());
+    displayStatus("Empty and Erase");
+}
+
+void    Size_SET_TEST(){
+    int myints[] = {75,23,65,42,13};
+    ft::set<int> myset (myints,myints+5);
+    std::set<int> set (myints,myints+5);
+    EXPECT_EQ(myset.size(), set.size());
+    EXPECT_EQ(myset.max_size(), set.max_size());
+    displayStatus("Size and Max_Size");
+}
+
+void    Insert_SET_TEST(){
+    ft::set<int> myset;
+    std::set<int> set;
+
+    // first insert function version (single parameter):
+
+    ft::pair<ft::set<int>::iterator, bool> myret;
+    std::pair<std::set<int>::iterator, bool> ret;
+
+    myret = myset.insert(100);
+    ret = set.insert(100);
+
+//    EXPECT_EQ(myret.first, ret.first);
+    EXPECT_EQ(myret.second, ret.second);
+    displayStatus("Insert");
+}
+
+//void    Swap_SET_TEST(){
+//    std::map<char, int> foo, bar;
+//    ft::map<char, int> myfoo, mybar;
+//
+//    foo['x'] = 100;
+//    foo['y'] = 200;
+//
+//    bar['a'] = 11;
+//    bar['b'] = 22;
+//    bar['c'] = 33;
+//
+//    myfoo['x'] = 100;
+//    myfoo['y'] = 200;
+//
+//    mybar['a'] = 11;
+//    mybar['b'] = 22;
+//    mybar['c'] = 33;
+//
+//    foo.swap(bar);
+//    myfoo.swap(mybar);
+//
+//    ft::map<char, int>::iterator myit = myfoo.begin();
+//    ft::map<char, int>::iterator myit2 = mybar.begin();
+//    std::map<char, int>::iterator it = foo.begin();
+//    std::map<char, int>::iterator it2 = bar.begin();
+//    EXPECT_EQ(myit->first, it->first);
+//    EXPECT_EQ(myit->second, it->second);
+//    EXPECT_EQ(myit2->first, it2->first);
+//    EXPECT_EQ(myit2->second, it2->second);
+//    EXPECT_EQ(foo.size(), myfoo.size());
+//    EXPECT_EQ(bar.size(), mybar.size());
+//    displayStatus("Swap");
+//}
+//
+//void    Clear_SET_TEST(){
+//    ft::map<char, int> mymap;
+//    std::map<char, int> map;
+//
+//    mymap['x'] = 100;
+//    mymap['y'] = 200;
+//    mymap['z'] = 300;
+//
+//    map['x'] = 100;
+//    map['y'] = 200;
+//    map['z'] = 300;
+//    mymap.clear();
+//    map.clear();
+//    EXPECT_EQ(map.size(), mymap.size());
+//    mymap['a'] = 1101;
+//    mymap['b'] = 2202;
+//
+//    map['a'] = 1101;
+//    map['b'] = 2202;
+//    EXPECT_EQ(map.size(), mymap.size());
+//    displayStatus("Clear");
+//}
+//
+//void    Key_Comp_SET_TEST(){
+//    ft::map<char, int> mymap;
+//    std::map<char, int> map;
+//
+//    mymap['a'] = 100;
+//    mymap['b'] = 200;
+//    mymap['c'] = 300;
+//    map['a'] = 100;
+//    map['b'] = 200;
+//    map['c'] = 300;
+//    char myhighest = mymap.rbegin()->first;
+//    char highest = map.rbegin()->first;
+//    EXPECT_EQ(myhighest, highest);
+//    displayStatus("Key Comp");
+//}
+//
+//void    Find_SET_TEST(){
+//    ft::map<char, int> mymap;
+//    ft::map<char, int>::iterator myit;
+//    std::map<char, int> map;
+//    std::map<char, int>::iterator it;
+//
+//    mymap['a'] = 50;
+//    mymap['b'] = 100;
+//    mymap['c'] = 150;
+//    mymap['d'] = 200;
+//    map['a'] = 50;
+//    map['b'] = 100;
+//    map['c'] = 150;
+//    map['d'] = 200;
+//
+//    myit = mymap.find('c');
+//    it = map.find('c');
+//    EXPECT_EQ(myit->second, it->second);
+//    displayStatus("Find");
+//}
+//
+//void    Lower_Upper_Bound_SET_TEST(){
+//    ft::map<char, int> mymap;
+//    ft::map<char, int>::iterator myitlow, myitup;
+//    std::map<char, int> map;
+//    std::map<char, int>::iterator itlow, itup;
+//
+//    mymap['a'] = 20;
+//    mymap['b'] = 40;
+//    mymap['c'] = 60;
+//    mymap['d'] = 80;
+//    mymap['e'] = 100;
+//    map['a'] = 20;
+//    map['b'] = 40;
+//    map['c'] = 60;
+//    map['d'] = 80;
+//    map['e'] = 100;
+//
+//    myitlow = mymap.lower_bound('b');
+//    myitup = mymap.upper_bound('d');
+//    itlow = map.lower_bound('b');
+//    itup = map.upper_bound('d');
+//    EXPECT_EQ(myitlow->second, itlow->second);
+//    EXPECT_EQ(myitup->second, itup->second);
+//    displayStatus("Upper and Lower Bound");
+//}
+//
+//void        Equal_Range_SET_TEST(){
+//    ft::map<char, int> mymap;
+//    std::map<char, int> map;
+//
+//    mymap['a'] = 10;
+//    mymap['b'] = 20;
+//    mymap['c'] = 30;
+//    map['a'] = 10;
+//    map['b'] = 20;
+//    map['c'] = 30;
+//    ft::pair<ft::map<char, int>::iterator, ft::map<char, int>::iterator> myret;
+//    myret = mymap.equal_range('b');
+//    std::pair<std::map<char, int>::iterator, std::map<char, int>::iterator> ret;
+//    ret = map.equal_range('b');
+//    EXPECT_EQ(ret.first->first, myret.first->first);
+//    EXPECT_EQ(ret.first->second, myret.first->second);
+//    EXPECT_EQ(ret.second->first, myret.second->first);
+//    EXPECT_EQ(ret.second->second, myret.second->second);
+//    displayStatus("Equal Range");
+//}
 
 int main(void) {
 	std::cout << BLACKC << "\n/// Vector Test Container ///\n";
@@ -1099,24 +1335,35 @@ int main(void) {
 	Stack_Operator2_TEST();
 
 	std::cout << BLACKC << "\n/// Map Test Container ///\n";
-	Pair_Constructor_TEST();
-	Pair_OperatorEqual_TEST();
-	Pair_Relational_Operator_TEST();
-	Constructors_TEST();
-	Begin_End_TEST();
-	RBegin_REnd_TEST();
-    Empty_Erase_TEST();
+	Pair_Constructor_Map_TEST();
+	Pair_OperatorEqual_Map_TEST();
+	Pair_Relational_Operator_Map_TEST();
+	Constructor_Map_TEST();
+	Begin_End_Map_TEST();
+	RBegin_REnd_Map_TEST();
+    Empty_Erase_Map_TEST();
     Size_Map_TEST();
     Operator_Map_TEST();
     Insert_Map_TEST();
-    Swap_Map();
+    Swap_Map_TEST();
     Clear_Map_TEST();
-    Key_Comp_TEST();
+    Key_Comp_Map_TEST();
     Find_Map_TEST();
-    Lower_Upper_Bound();
-    Equal_Range();
+    Lower_Upper_Bound_MAP_TEST();
+    Equal_Range_MAP_TEST();
 
     std::cout << BLACKC << "\n/// Set Test Container ///\n";
-
+    Constructor_SET_TEST();
+    Begin_End_SET_TEST();
+    RBegin_REnd_SET_TEST();
+    Empty_Erase_SET_TEST();
+    Size_SET_TEST();
+    Insert_SET_TEST();
+//    Swap_SET_TEST();
+//    Clear_SET_TEST();
+//    Key_Comp_SET_TEST();
+//    Find_SET_TEST();
+//    Lower_Upper_Bound_SET_TEST();
+//    Equal_Range_SET_TEST();
     return (0);
 }
