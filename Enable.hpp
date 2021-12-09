@@ -1,3 +1,6 @@
+#ifndef ENABLE_HPP
+#define ENABLE_HPP
+
 namespace ft {
 	template <class U, class V>
 	// ----- IS SAME -----
@@ -66,3 +69,5 @@ namespace ft {
 	template<>
 	struct is_integral<unsigned long long int>: true_type {};
 }
+
+#endif

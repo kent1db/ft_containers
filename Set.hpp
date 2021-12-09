@@ -4,6 +4,7 @@
 #include "Iterator.hpp"
 #include "RedBlackTree.hpp"
 #include "LexicoComp.hpp"
+#include "Enable.hpp"
 #include "Pair.hpp"
 
 namespace ft {

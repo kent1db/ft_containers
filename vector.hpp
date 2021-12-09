@@ -112,13 +112,13 @@ namespace ft {
 				return (_p >= rhs._p);
 			}
 
-			random_access_iterator &operator+=(const random_access_iterator &rhs) {
-				_p += rhs._p;
+			random_access_iterator &operator+=(typename random_access_iterator::difference_type rhs) {
+				_p += rhs;
 				return (*this);
 			}
 
-			random_access_iterator &operator-=(const random_access_iterator &rhs) {
-				_p -= rhs._p;
+			random_access_iterator &operator-=(typename random_access_iterator::difference_type rhs) {
+				_p -= rhs;
 				return (*this);
 			}
 
@@ -252,9 +252,9 @@ namespace ft {
 		}
 
 		void resize (size_type n, value_type val = value_type()) {
-			if (n <= _size) {
+			if (n < _size) {
 				while (n < _size)
-					_alloc.destroy(&_array[n++]);
+					_alloc.destroy(&_array[_size--]);
 			}
 			else if (n > _size && n <= _capacity) {
 				while (_size < n)

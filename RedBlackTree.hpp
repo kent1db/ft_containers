@@ -43,14 +43,14 @@ namespace ft {
 		Compare _comp;
 	public:
 		/// Constructor ///
-		tree() : _alloc(std::allocator<node >()), root(NULL), elem(NULL), _comp(std::less<Key >())  {}
+		tree() : _alloc(Alloc()), root(NULL), elem(NULL), _comp(Compare())  {}
 
-		explicit tree(P data) : _alloc(std::allocator<node >()),  root(_alloc.allocate(1)), elem(NULL), _comp(std::less<Key >()) {
+		explicit tree(P data) : _alloc(Alloc()),  root(_alloc.allocate(1)), elem(NULL), _comp(Compare()) {
 			_alloc.construct(root, node(data));
 			root->color = black;
 		}
 
-		tree(const tree& x) : _alloc(x._alloc), root(NULL), elem(NULL), _comp(std::less<Key >()) {
+		tree(const tree& x) : _alloc(x._alloc), root(NULL), elem(NULL), _comp(Compare()) {
 			*this = x;
 		}
 
@@ -71,6 +71,12 @@ namespace ft {
 			deleteTree(root);
 			copyElem(x.root);
 			return (*this);
+		}
+
+		void swap(tree &x){
+			node *tmp = root;
+			root = x.root;
+			x.root = tmp;
 		}
 
 		node *find(const Key key, node *start) const {

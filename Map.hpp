@@ -4,6 +4,7 @@
 #include "Iterator.hpp"
 #include "RedBlackTree.hpp"
 #include "LexicoComp.hpp"
+#include "Enable.hpp"
 #include "Pair.hpp"
 
 namespace ft {
@@ -288,9 +289,16 @@ namespace ft {
 		}
 
 		void swap(map& x) {
-			map tmp(*this);
-			*this = x;
-			x = tmp;
+			RBtree.swap(x.RBtree);
+			size_type 			tmp_size = x._size;
+			allocator_type 		tmp_alloc = x._alloc;
+			key_compare 		tmp_comp = x._comp;
+			x._size = _size;
+			x._alloc = _alloc;
+			x._comp = _comp;
+			_size = tmp_size;
+			_alloc = tmp_alloc;
+			_comp = tmp_comp;
 		}
 
 		void clear() {
