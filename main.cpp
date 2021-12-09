@@ -847,23 +847,217 @@ void	RBegin_REnd_TEST() {
 	displayStatus("RBegin and REnd");
 }
 
-//void 	Empty_Map_TEST(void){
-//	ft::map<char, int> mymap;
-//	ft::map<char, int> mymap;
-//
-//
-//	mymap['a'] = 10;
-//	mymap['b'] = 20;
-//	mymap['c'] = 30;
-//
-//	while (!mymap.empty()) {
-//		std::cout << mymap.begin()->first << " => " << mymap.begin()->second << std::endl;
-//		mymap.erase(mymap.begin());
-//	}
-//}
+void 	Empty_Erase_TEST(void){
+	ft::map<char, int> mymap;
+	std::map<char, int> map;
 
 
+	mymap['a'] = 10;
+	mymap['b'] = 20;
+	mymap['c'] = 30;
+    map['a'] = 10;
+    map['b'] = 20;
+    map['c'] = 30;
 
+	for (int i = 0; i < 3; i++) {
+        mymap.erase(mymap.begin());
+        map.erase(map.begin());
+	}
+    EXPECT_EQ(mymap.empty(), map.empty());
+    displayStatus("Empty and Erase");
+}
+
+void    Size_Map_TEST(){
+    ft::map<char, int> mymap;
+    std::map<char, int> map;
+
+
+    mymap['a'] = 10;
+    mymap['b'] = 20;
+    mymap['c'] = 30;
+    map['a'] = 10;
+    map['b'] = 20;
+    map['c'] = 30;
+    EXPECT_EQ(mymap.size(), map.size());
+    EXPECT_EQ(mymap.max_size(), map.max_size());
+    displayStatus("Size and Max_Size");
+}
+
+void    Operator_Map_TEST(){
+    ft::map<char, int> mymap;
+    std::map<char, int> map;
+
+
+    mymap['a'] = 10;
+    mymap['b'] = 20;
+    mymap['c'] = 30;
+    map['a'] = 10;
+    map['b'] = 20;
+    map['c'] = 30;
+    EXPECT_EQ(mymap['a'], map['a']);
+    EXPECT_EQ(mymap['b'], map['b']);
+    EXPECT_EQ(mymap['c'], map['c']);
+    displayStatus("Operator []");
+}
+
+void    Insert_Map_TEST(){
+    ft::map<char, int> mymap;
+    std::map<char, int> map;
+
+    // first insert function version (single parameter):
+
+    ft::pair<ft::map<char, int>::iterator, bool> myret;
+    std::pair<std::map<char, int>::iterator, bool> ret;
+
+    myret = mymap.insert(ft::pair<char, int>('a', 100));
+    ret = map.insert(std::pair<char, int>('a', 100));
+
+    EXPECT_EQ(myret.first->first, ret.first->first);
+    EXPECT_EQ(myret.second, ret.second);
+    EXPECT_EQ(myret.first->second, ret.first->second);
+    displayStatus("Insert");
+}
+
+void    Swap_Map(){
+    std::map<char, int> foo, bar;
+    ft::map<char, int> myfoo, mybar;
+
+    foo['x'] = 100;
+    foo['y'] = 200;
+
+    bar['a'] = 11;
+    bar['b'] = 22;
+    bar['c'] = 33;
+
+    myfoo['x'] = 100;
+    myfoo['y'] = 200;
+
+    mybar['a'] = 11;
+    mybar['b'] = 22;
+    mybar['c'] = 33;
+
+    foo.swap(bar);
+    myfoo.swap(mybar);
+
+    ft::map<char, int>::iterator myit = myfoo.begin();
+    ft::map<char, int>::iterator myit2 = mybar.begin();
+    std::map<char, int>::iterator it = foo.begin();
+    std::map<char, int>::iterator it2 = bar.begin();
+    EXPECT_EQ(myit->first, it->first);
+    EXPECT_EQ(myit->second, it->second);
+    EXPECT_EQ(myit2->first, it2->first);
+    EXPECT_EQ(myit2->second, it2->second);
+    EXPECT_EQ(foo.size(), myfoo.size());
+    EXPECT_EQ(bar.size(), mybar.size());
+    displayStatus("Swap");
+}
+
+void    Clear_Map_TEST(){
+    ft::map<char, int> mymap;
+    std::map<char, int> map;
+
+    mymap['x'] = 100;
+    mymap['y'] = 200;
+    mymap['z'] = 300;
+
+    map['x'] = 100;
+    map['y'] = 200;
+    map['z'] = 300;
+    mymap.clear();
+    map.clear();
+    EXPECT_EQ(map.size(), mymap.size());
+    mymap['a'] = 1101;
+    mymap['b'] = 2202;
+
+    map['a'] = 1101;
+    map['b'] = 2202;
+    EXPECT_EQ(map.size(), mymap.size());
+    displayStatus("Clear");
+}
+
+void    Key_Comp_TEST(){
+    ft::map<char, int> mymap;
+    std::map<char, int> map;
+
+    mymap['a'] = 100;
+    mymap['b'] = 200;
+    mymap['c'] = 300;
+    map['a'] = 100;
+    map['b'] = 200;
+    map['c'] = 300;
+    char myhighest = mymap.rbegin()->first;
+    char highest = map.rbegin()->first;
+    EXPECT_EQ(myhighest, highest);
+    displayStatus("Key Comp");
+}
+
+void    Find_Map_TEST(){
+    ft::map<char, int> mymap;
+    ft::map<char, int>::iterator myit;
+    std::map<char, int> map;
+    std::map<char, int>::iterator it;
+
+    mymap['a'] = 50;
+    mymap['b'] = 100;
+    mymap['c'] = 150;
+    mymap['d'] = 200;
+    map['a'] = 50;
+    map['b'] = 100;
+    map['c'] = 150;
+    map['d'] = 200;
+
+    myit = mymap.find('c');
+    it = map.find('c');
+    EXPECT_EQ(myit->second, it->second);
+    displayStatus("Find");
+}
+
+void    Lower_Upper_Bound(){
+    ft::map<char, int> mymap;
+    ft::map<char, int>::iterator myitlow, myitup;
+    std::map<char, int> map;
+    std::map<char, int>::iterator itlow, itup;
+
+    mymap['a'] = 20;
+    mymap['b'] = 40;
+    mymap['c'] = 60;
+    mymap['d'] = 80;
+    mymap['e'] = 100;
+    map['a'] = 20;
+    map['b'] = 40;
+    map['c'] = 60;
+    map['d'] = 80;
+    map['e'] = 100;
+
+    myitlow = mymap.lower_bound('b');
+    myitup = mymap.upper_bound('d');
+    itlow = map.lower_bound('b');
+    itup = map.upper_bound('d');
+    EXPECT_EQ(myitlow->second, itlow->second);
+    EXPECT_EQ(myitup->second, itup->second);
+    displayStatus("Upper and Lower Bound");
+}
+
+void        Equal_Range(){
+    ft::map<char, int> mymap;
+    std::map<char, int> map;
+
+    mymap['a'] = 10;
+    mymap['b'] = 20;
+    mymap['c'] = 30;
+    map['a'] = 10;
+    map['b'] = 20;
+    map['c'] = 30;
+    ft::pair<ft::map<char, int>::iterator, ft::map<char, int>::iterator> myret;
+    myret = mymap.equal_range('b');
+    std::pair<std::map<char, int>::iterator, std::map<char, int>::iterator> ret;
+    ret = map.equal_range('b');
+    EXPECT_EQ(ret.first->first, myret.first->first);
+    EXPECT_EQ(ret.first->second, myret.first->second);
+    EXPECT_EQ(ret.second->first, myret.second->first);
+    EXPECT_EQ(ret.second->second, myret.second->second);
+    displayStatus("Equal Range");
+}
 
 int main(void) {
 	std::cout << BLACKC << "\n/// Vector Test Container ///\n";
@@ -911,6 +1105,18 @@ int main(void) {
 	Constructors_TEST();
 	Begin_End_TEST();
 	RBegin_REnd_TEST();
+    Empty_Erase_TEST();
+    Size_Map_TEST();
+    Operator_Map_TEST();
+    Insert_Map_TEST();
+    Swap_Map();
+    Clear_Map_TEST();
+    Key_Comp_TEST();
+    Find_Map_TEST();
+    Lower_Upper_Bound();
+    Equal_Range();
 
-	return (0);
+    std::cout << BLACKC << "\n/// Set Test Container ///\n";
+
+    return (0);
 }
