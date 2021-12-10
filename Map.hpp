@@ -192,14 +192,14 @@ namespace ft {
 		}
 
 		reverse_iterator rbegin() {
-			node<pair<const Key, T> > *node = RBtree.createElem(ft::pair<const Key, T>(0, 0));
+			node<pair<const Key, T> > *node = RBtree.createEnd(ft::pair<const Key, T>(0, 0));
 			node->parent = RBtree.maximum();
 			iterator it(node);
 			return (reverse_iterator(it));
 		}
 
 		const_reverse_iterator rbegin() const {
-			node<pair<const Key, T> > *node = RBtree.createElem(ft::pair<const Key, T>(0, 0));
+			node<pair<const Key, T> > *node = RBtree.createEnd(ft::pair<const Key, T>(0, 0));
 			node->parent = RBtree.maximum();
 			iterator it(node);
 			return (reverse_iterator(it));
@@ -313,13 +313,11 @@ namespace ft {
 		}
 
 		class value_compare {
-			friend class map;
-
+			typedef pair<const Key, T>							value_type;
 		protected:
 			Compare comp;
-
-			value_compare(Compare c) : comp(c) {}
 		public:
+			value_compare(Compare c) : comp(c) {}
 			bool operator()(const value_type &x, const value_type &y) const {
 				return comp(x.first, y.first);
 			}

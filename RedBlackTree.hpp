@@ -41,11 +41,13 @@ namespace ft {
 		node *root;
 		node *elem;
 		Compare _comp;
+		node *end;
+		int b_end;
 	public:
 		/// Constructor ///
-		tree() : _alloc(Alloc()), root(NULL), elem(NULL), _comp(Compare())  {}
+		tree() : _alloc(Alloc()), root(NULL), elem(NULL), _comp(Compare()) , end(NULL), b_end(0) {}
 
-		explicit tree(P data) : _alloc(Alloc()),  root(_alloc.allocate(1)), elem(NULL), _comp(Compare()) {
+		explicit tree(P data) : _alloc(Alloc()),  root(_alloc.allocate(1)), elem(NULL), _comp(Compare()), end(NULL), b_end(0) {
 			_alloc.construct(root, node(data));
 			root->color = black;
 		}
@@ -75,8 +77,18 @@ namespace ft {
 
 		void swap(tree &x){
 			node *tmp = root;
+			int b_tmp = b_end;
+			node *end_tmp = end;
 			root = x.root;
+			if (x.b_end) {
+				end = x.end;
+				b_end = x.b_end;
+			}
 			x.root = tmp;
+			if (b_tmp) {
+				x.end = end_tmp;
+				x.b_end = b_tmp;
+			}
 		}
 
 		node *find(const Key key, node *start) const {
@@ -116,6 +128,15 @@ namespace ft {
 			elem = _alloc.allocate(1);
 			_alloc.construct(elem, node(data));
 			return elem;
+		}
+
+		node *createEnd(const P data) {
+			if (b_end == 1)
+				ft_delete(end);
+			b_end = 1;
+			end = _alloc.allocate(1);
+			_alloc.construct(end, node(data));
+			return end;
 		}
 
 		void copyElem(node *toCopy) {
@@ -402,6 +423,10 @@ namespace ft {
 			deleteTree(start->left);
 			deleteTree(start->right);
 			ft_delete(start);
+			if (b_end == 1) {
+				ft_delete(end);
+				b_end = 0;
+			}
 			root = NULL;
 		}
 

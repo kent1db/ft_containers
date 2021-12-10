@@ -201,7 +201,8 @@ namespace ft {
 			clear();
 			_capacity = x._capacity;
 			_alloc = x._alloc;
-			_array = _alloc.allocate(_capacity);
+			if (_capacity > 0)
+				_array = _alloc.allocate(_capacity);
 			for (_size = 0; _size < x._size; _size++)
 				_alloc.construct(&_array[_size], x._array[_size]);
 			return (*this);

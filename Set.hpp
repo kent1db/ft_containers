@@ -19,7 +19,7 @@ namespace ft {
 		private:
 			void modifyValueType() {
 				if (_node)
-					_p = &_node->data.second;
+					_p = &_node->data.first;
 				else
 					_p = NULL;
 			}
@@ -191,14 +191,14 @@ namespace ft {
 		}
 
 		reverse_iterator rbegin() {
-			node<pair<T, T> > *node = RBtree.createElem(ft::pair<T, T>(0, 0));
+			node<pair<T, T> > *node = RBtree.createEnd(ft::pair<T, T>(0, 0));
 			node->parent = RBtree.maximum();
 			iterator it(node);
 			return (reverse_iterator(it));
 		}
 
 		const_reverse_iterator rbegin() const {
-			node<pair<T, T> > *node = RBtree.createElem(ft::pair<T, T>(0, 0));
+			node<pair<T, T> > *node = RBtree.createEnd(ft::pair<T, T>(0, 0));
 			node->parent = RBtree.maximum();
 			iterator it(node);
 			return (reverse_iterator(it));
@@ -302,13 +302,11 @@ namespace ft {
 		}
 
 		class value_compare {
-			friend class set;
-
+			typedef T											value_type;
 		protected:
 			Compare comp;
-
-			value_compare(Compare c) : comp(c) {}
 		public:
+			value_compare(Compare c) : comp(c) {}
 			bool operator()(const value_type &x, const value_type &y) const {
 				return comp(x, y);
 			}
